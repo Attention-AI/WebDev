@@ -1,0 +1,4 @@
+{
+    "mongoURI": "mongodb+srv://aditya:mongo123@mern-cluster.ccoug.mongodb.net/authdb?retryWrites=true&w=majority",
+    "jwtSecret": "sl_myJwtSecret" 
+}
