@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import '../../App.css';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -13,6 +13,13 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { connect } from 'react-redux';
+import { login } from '../../actions/authActions';
+import { clearErrors } from '../../actions/errorActions';
+import PropTypes from 'prop-types';
+import {Alert} from 'reactstrap';
+import { ReactComponent } from '*.svg';
+
 
 function Copyright() {
   return (
@@ -27,28 +34,49 @@ function Copyright() {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
+ 
 
-export default function SignIn() {
-  const classes = useStyles();
+//export default function SignIn() {
+class SignIn extends Component {
+  state = {
+    name: '',
+    email:'',
+    password:'',
+    msg: null
+  };
+
+  useStyles = makeStyles((theme) => ({
+    paper: {
+      marginTop: theme.spacing(8),
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    avatar: {
+      margin: theme.spacing(1),
+      backgroundColor: theme.palette.secondary.main,
+    },
+    form: {
+      width: '100%', // Fix IE 11 issue.
+      marginTop: theme.spacing(1),
+    },
+    submit: {
+      margin: theme.spacing(3, 0, 2),
+    },
+  }));
+  static propTypes = {
+
+    isAuthenticated: PropTypes.bool,
+    error: PropTypes.object.isRequired,
+    login: PropTypes.func.isRequired,
+    clearErrors: PropTypes.func.isRequired
+  };
+
+
+  const classes = this.useStyles(); 
+ 
+
+  render() {
 
   return (
     <Container component="main" maxWidth="xs">
@@ -59,7 +87,8 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        { this.state.msg ? (<Alert color='danger'>{this.state.msg}</Alert>): null}
+        <form className={classes.form} noValidate onSubmit={this.onSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -87,6 +116,7 @@ export default function SignIn() {
             label="Remember me"
           />
           <Button
+            //onClick={ }
             type="submit"
             fullWidth
             variant="contained"
@@ -96,11 +126,7 @@ export default function SignIn() {
             Sign In
           </Button>
           <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
+            
             <Grid item>
               <Link href="#" variant="body2">
                 {"Don't have an account? Sign Up"}
@@ -113,5 +139,7 @@ export default function SignIn() {
         <Copyright />
       </Box>
     </Container>
-  );
+  )};
 }
+
+export default SignIn;

@@ -1,19 +1,53 @@
 import axios from 'axios';
+import { returnErrors } from './errorActions';
 import {
-
-    USER_LOADED,
-    USER_LOADING,
-    AUTH_ERROR,
-    LOGIN_SUCCESS,
-    LOGIN_FAIL,
-    LOGOUT_SUCCESS,
-    
+  USER_LOADED,
+  USER_LOADING,
+  AUTH_ERROR,
+  LOGIN_SUCCESS,
+  LOGIN_FAIL,
+  LOGOUT_SUCCESS,
+ 
 } from './types';
+//import { IAuthFunction, IConfigHeaders } from '../../types/interfaces';
 
-//check token to load user
-export const loaduser = () => (dispatch,getstate) => {
-    //User Loading
-    dispatch({type: USER_LOADING});
+// Check token & load user
+export const loadUser = () => (dispatch, getState) => {
+  // User loading
+  dispatch({ type: USER_LOADING });
 
-    axios.get('/api/auth/user')
+
+
+  axios
+    .get('/api/auth/user', tokenConfig(getState))
+    .then(res =>
+      dispatch({
+        type: USER_LOADED,
+        payload: res.data
+      })
+    )
+    .catch(err => {
+      dispatch(returnErrors(err.response.data, err.response.status));
+      dispatch({
+        type: AUTH_ERROR
+      });
+    });
+};
+
+//Setup config/headers and token
+export const tokenConfig = getState => {
+
+const token = getState().auth.token;
+
+
+const config = {
+  headers: {
+    'Content-Type': 'application/json'
+  }
+};
+
+if(token) {
+    config.headers['x-auth-token']=token;
+}
+    return config;
 }
