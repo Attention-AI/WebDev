@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { Component, useState } from "react";
 import "../../App.css";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -16,6 +16,7 @@ import Container from "@material-ui/core/Container";
 import { connect } from "react-redux";
 import { login } from "../../actions/authActions";
 import { clearErrors } from "../../actions/errorActions";
+import PropTypes from "prop-types";
 import { Alert } from "reactstrap";
 
 function Copyright() {
@@ -50,44 +51,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SignIn = ({ isAuthenticated, error, login, clearErrors }) => {
-  //export default function SignIn() {
+export default function SignIn() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
 
-  const handleToggle = useCallback(() => {
-    // Clear errors
-    clearErrors();
-  }, [clearErrors]);
-
-  const handleChangeEmail = (e) => setEmail(e.target.value);
-  const handleChangePassword = (e) => setPassword(e.target.value);
-
-  const handleOnSubmit = (e) => {
-    e.preventDefault();
-    //console.log(email, password);
-
-    const user = { email, password };
-    // Attempt to login
-    login(user);
-  };
-
-  useEffect(() => {
-    // Check for register error
-    if (error.id === "LOGIN_FAIL") {
-      setMsg(error.msg.msg);
-    } else {
-      setMsg(null);
-    }
-
-    if (isAuthenticated) {
-      handleToggle();
-    }
-    // }, [error, handleToggle, isAuthenticated]);
-  }, []);
-
-  function onSubmit() {}
+  // static propTypes = {
+  //   isAuthenticated: PropTypes.bool,
+  //   error: PropTypes.object.isRequired,
+  //   login: PropTypes.func.isRequired,
+  //   clearErrors: PropTypes.func.isRequired,
+  // };
+  const onSubmit = () => {};
   const classes = useStyles();
 
   return (
@@ -153,19 +129,4 @@ const SignIn = ({ isAuthenticated, error, login, clearErrors }) => {
       </Box> */}
     </Container>
   );
-};
-
-// SignIn.propTypes = {
-//   isAuthenticated: PropTypes.bool,
-//   error: PropTypes.object.isRequired,
-//   login: PropTypes.func.isRequired,
-//   clearErrors: PropTypes.func.isRequired
-//   };
-
-const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
-  error: state.error,
-});
-
-export default connect(mapStateToProps, { login, clearErrors })(SignIn);
-//export default SignIn;
+}
