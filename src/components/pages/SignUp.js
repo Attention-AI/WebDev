@@ -50,14 +50,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SignIn = ({
-  isAuthenticated,
-  error,
-  login,
-  clearErrors
-}) => {
-
-//export default function SignIn() {
+const SignIn = ({ isAuthenticated, error, login, clearErrors }) => {
+  //export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
@@ -70,22 +64,18 @@ const SignIn = ({
   const handleChangeEmail = (e) => setEmail(e.target.value);
   const handleChangePassword = (e) => setPassword(e.target.value);
 
-
   const handleOnSubmit = (e) => {
-
-    // e.preventDefault();
+    e.preventDefault();
     //console.log(email, password);
 
     const user = { email, password };
-    console.log("fun calling",user)
-
     // Attempt to login
     login(user);
   };
 
   useEffect(() => {
     // Check for register error
-    if (error.id === 'LOGIN_FAIL') {
+    if (error.id === "LOGIN_FAIL") {
       setMsg(error.msg.msg);
     } else {
       setMsg(null);
@@ -94,11 +84,10 @@ const SignIn = ({
     if (isAuthenticated) {
       handleToggle();
     }
-  }, [error, handleToggle, isAuthenticated]);
+    // }, [error, handleToggle, isAuthenticated]);
+  }, []);
 
-  
-
-  function onSubmit() { }
+  function onSubmit() {}
   const classes = useStyles();
 
   return (
@@ -140,7 +129,7 @@ const SignIn = ({
             label="Remember me"
           />
           <Button
-            onClick={ handleOnSubmit }
+            onClick={handleOnSubmit}
             type="submit"
             fullWidth
             variant="contained"
@@ -159,12 +148,12 @@ const SignIn = ({
           </Grid>
         </form>
       </div>
-      <Box mt={8}>
+      {/* <Box mt={8}>
         <Copyright />
-      </Box>
+      </Box> */}
     </Container>
   );
-}
+};
 
 // SignIn.propTypes = {
 //   isAuthenticated: PropTypes.bool,
@@ -173,10 +162,9 @@ const SignIn = ({
 //   clearErrors: PropTypes.func.isRequired
 //   };
 
-
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
-  error: state.error
+  error: state.error,
 });
 
 export default connect(mapStateToProps, { login, clearErrors })(SignIn);
