@@ -71,9 +71,9 @@ const SignIn = ({
   const handleChangePassword = (e) => setPassword(e.target.value);
 
 
-  const handleOnSubmit = (e) => {
+  const handleOnSubmit = (e:any) => {
 
-    // e.preventDefault();
+    e.preventDefault();
     //console.log(email, password);
 
     const user = { email, password };
