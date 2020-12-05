@@ -1,5 +1,6 @@
 import React, { Component, useEffect, useState } from "react";
 import "../../App.css";
+import { Redirect } from "react-router-dom";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -18,12 +19,9 @@ import { login } from "../../actions/authActions";
 import { clearErrors } from "../../actions/errorActions";
 import PropTypes from "prop-types";
 import { Alert } from "reactstrap";
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Products from "./Products";
 import { render } from "@testing-library/react";
-
-
-
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -51,41 +49,35 @@ function SignIn({ isAuthenticated, error, login, clearErrors }) {
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
 
-
-  
   // //const onSubmit = () => {};
   const classes = useStyles();
-  const handleChangeEmail=(e)=> setEmail(e.target.value);
-  const handleChangePassword=(e)=> setPassword(e.target.value);
-  const handleOnSubmit=(e) => {
+  const handleChangeEmail = (e) => setEmail(e.target.value);
+  const handleChangePassword = (e) => setPassword(e.target.value);
+  const handleOnSubmit = (e) => {
     e.preventDefault();
 
     const user = { email, password };
 
     login(user);
-    if(isAuthenticated){
-      render() {
-      return (
-      <Router>
-        <Route path="/products" component={Products}/>
-      </Router> 
-      );}
-    }
+
+    // if(isAuthenticated){
+    //   return (
+    //   <Router>
+    //     <Route path="/products" component={Products}/>
+    //   </Router>
+    //   );
+    // }
   };
-  useEffect (() => {
-    if(error.id==='LOGIN_FAIL') {
+  useEffect(() => {
+    if (error.id === "LOGIN_FAIL") {
       setMsg(error.msg.msg);
-    }else {
+    } else {
       setMsg(null);
     }
-  })
-
- 
-
-
-
+  });
+  console.log("auth", isAuthenticated);
+  if (isAuthenticated) return <Redirect to="/products" />;
   return (
-    
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
@@ -95,7 +87,6 @@ function SignIn({ isAuthenticated, error, login, clearErrors }) {
         </Typography>
         {msg ? <Alert color="danger">{msg}</Alert> : null}
         <form className={classes.form} noValidate onSubmit={handleOnSubmit}>
-          
           <TextField
             variant="outlined"
             margin="normal"
@@ -149,7 +140,6 @@ function SignIn({ isAuthenticated, error, login, clearErrors }) {
       </Box> */}
     </Container>
   );
-  
 }
 
 SignIn.propTypes = {
@@ -159,11 +149,9 @@ SignIn.propTypes = {
   clearErrors: PropTypes.func.isRequired,
 };
 
- 
-
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
-  error: state.error
+  error: state.error,
 });
 
-export default connect(mapStateToProps, { login})(SignIn);
+export default connect(mapStateToProps, { login })(SignIn);
