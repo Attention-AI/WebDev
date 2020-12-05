@@ -9,14 +9,14 @@ import {
 } from "./types";
 import Config from "../Config";
 //import { IAuthFunction, IConfigHeaders } from '../../types/interfaces';
-
+let baseurl="http://localhost:5000"
 // Check token & load user
 export const loadUser = () => (dispatch, getState) => {
   // User loading
   dispatch({ type: USER_LOADING });
 
   axios
-    .get(`${Config.hostName}/api/auth/user`, tokenConfig(getState))
+    .get(`${baseurl}/api/auth/user`, tokenConfig(getState))
     .then((res) =>
       dispatch({
         type: USER_LOADED,
@@ -44,7 +44,7 @@ export const login = ({ email, password }) => (dispatch) => {
   const body = JSON.stringify({ email, password });
 
   axios
-    .post(`${Config.hostName}/api/auth`, body, config)
+    .post(`${baseurl}/api/auth`, body, config)
     .then((res) =>
       dispatch({
         type: LOGIN_SUCCESS,

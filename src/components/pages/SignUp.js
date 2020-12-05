@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useEffect, useState } from "react";
 import "../../App.css";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -18,19 +18,13 @@ import { login } from "../../actions/authActions";
 import { clearErrors } from "../../actions/errorActions";
 import PropTypes from "prop-types";
 import { Alert } from "reactstrap";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import Products from "./Products";
+import { render } from "@testing-library/react";
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+
+
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -51,22 +45,47 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn() {
-  const [name, setName] = useState("");
+function SignIn({ isAuthenticated, error, login, clearErrors }) {
+  //const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
 
-  // static propTypes = {
-  //   isAuthenticated: PropTypes.bool,
-  //   error: PropTypes.object.isRequired,
-  //   login: PropTypes.func.isRequired,
-  //   clearErrors: PropTypes.func.isRequired,
-  // };
-  const onSubmit = () => {};
+
+  
+  // //const onSubmit = () => {};
   const classes = useStyles();
+  const handleChangeEmail=(e)=> setEmail(e.target.value);
+  const handleChangePassword=(e)=> setPassword(e.target.value);
+  const handleOnSubmit=(e) => {
+    e.preventDefault();
+
+    const user = { email, password };
+
+    login(user);
+    if(isAuthenticated){
+      render() {
+      return (
+      <Router>
+        <Route path="/products" component={Products}/>
+      </Router> 
+      );}
+    }
+  };
+  useEffect (() => {
+    if(error.id==='LOGIN_FAIL') {
+      setMsg(error.msg.msg);
+    }else {
+      setMsg(null);
+    }
+  })
+
+ 
+
+
 
   return (
+    
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
@@ -75,7 +94,8 @@ export default function SignIn() {
           Sign in
         </Typography>
         {msg ? <Alert color="danger">{msg}</Alert> : null}
-        <form className={classes.form} noValidate onSubmit={onSubmit}>
+        <form className={classes.form} noValidate onSubmit={handleOnSubmit}>
+          
           <TextField
             variant="outlined"
             margin="normal"
@@ -129,4 +149,21 @@ export default function SignIn() {
       </Box> */}
     </Container>
   );
+  
 }
+
+SignIn.propTypes = {
+  isAuthenticated: PropTypes.bool,
+  error: PropTypes.object.isRequired,
+  login: PropTypes.func.isRequired,
+  clearErrors: PropTypes.func.isRequired,
+};
+
+ 
+
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+  error: state.error
+});
+
+export default connect(mapStateToProps, { login})(SignIn);
